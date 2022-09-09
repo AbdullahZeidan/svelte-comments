@@ -11,7 +11,9 @@ const config = {
 		adapter: adapter(),
 		alias: {
 			'@components/*': 'src/components/*',
-			'@icons/*': 'src/icons/*'
+			'@icons/*': 'src/icons/*',
+			'@types': 'src/types.ts',
+			'@stores': 'src/stores.ts'
 		}
 	}
 };

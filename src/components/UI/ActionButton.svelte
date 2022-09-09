@@ -1,13 +1,10 @@
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte';
-	const dispatch = createEventDispatcher();
 	export let variant: 'primary' | 'secondary' = 'primary';
-
 	let classname = '';
 	export { classname as class };
 </script>
 
-<button class="btn-action btn-action--{variant} {classname}" on:click={() => dispatch('click')}>
+<button class="btn-action btn-action--{variant} {classname}" on:click>
 	<slot />
 </button>
 

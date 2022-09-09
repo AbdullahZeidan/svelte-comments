@@ -1,41 +1,35 @@
 <script lang="ts">
 	import PlusIcon from '@icons/icon-plus.svg';
 	import MinusIcon from '@icons/icon-minus.svg';
-	import DeleteIcon from '@icons/icon-delete.svg';
-	import EditIcon from '@icons/icon-edit.svg';
-
-	import ActionButton from '@components/UI/ActionButton.svelte';
 	import { createEventDispatcher } from 'svelte';
+
 	const dispatch = createEventDispatcher();
 
 	export let score = 0;
 </script>
 
-<section class="votes-container">
+<section label="Comment score" class="votes-container">
 	<div class="votes">
-		<button aria-label="Upvote comment" on:click={() => dispatch('upvote')}><PlusIcon /></button>
+		<button aria-label="Upvote" on:click={() => dispatch('upvote')}>
+			<PlusIcon />
+		</button>
 		<p class="votes__score">{score}</p>
-		<button aria-label="Downvote comment" on:click={() => dispatch('downvote')}
-			><MinusIcon /></button
-		>
+		<button aria-label="Downvote" on:click={() => dispatch('downvote')}>
+			<MinusIcon />
+		</button>
 	</div>
-	<div class="actions">
-		<ActionButton variant="secondary" on:click={() => console.log('clicked')}>
-			<DeleteIcon /> Delete
-		</ActionButton>
-		<ActionButton variant="primary" on:click={() => console.log('clicked')}>
-			<EditIcon /> Edit
-		</ActionButton>
-	</div>
+	<slot name="actions" />
 </section>
 
 <style lang="scss">
 	.votes-container {
 		display: flex;
-		align-items: center;
-		justify-content: space-between;
 		flex-wrap: wrap;
+		justify-content: space-between;
+		align-items: center;
 		gap: 0.75rem;
+
+		align-self: stretch;
 	}
 
 	.votes {
@@ -48,7 +42,7 @@
 		border-radius: var(--bdr-radius);
 
 		&__score {
-			margin: 0.4rem 0.7rem;
+			margin: 0 0.5rem;
 			font-weight: var(--fw-500);
 		}
 
@@ -72,8 +66,11 @@
 		.votes {
 			flex-direction: column;
 		}
-		.votes-container :global(.btn-action) {
-			display: none;
+		.votes-container {
+			align-self: unset;
+			:global(.btn-action) {
+				display: none;
+			}
 		}
 	}
 </style>

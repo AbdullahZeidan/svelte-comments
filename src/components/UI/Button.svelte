@@ -1,10 +1,11 @@
 <script lang="ts">
 	let classname = '';
-	let itsType: 'submit' | 'reset' | 'button' = 'button';
-	export { classname as class, itsType as type };
+	export let type: 'submit' | 'reset' | 'button' = 'submit';
+	export let disabled: boolean = false;
+	export { classname as class };
 </script>
 
-<button class="btn {classname}">
+<button class="btn {classname}" {type} {disabled} on:click>
 	<slot />
 </button>
 
@@ -19,8 +20,20 @@
 
 		transition: opacity var(--duration) linear;
 
-		&:hover {
+		&--secondary {
+			background-color: var(--clr-neutral-500);
+		}
+		&--danger {
+			background-color: var(--clr-accent-500);
+		}
+
+		&:hover,
+		&:focus {
 			opacity: 0.5;
+		}
+		&:disabled {
+			opacity: 0.7;
+			cursor: not-allowed;
 		}
 	}
 </style>
