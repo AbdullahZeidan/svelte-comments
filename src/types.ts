@@ -20,9 +20,5 @@ export interface ReplyData extends CommentData {
 	replyingTo: string;
 }
 
-export interface ThreadData {
-	comments: CommentData[];
-}
-
 /** Can be null, but not undefined */
 export type Nullable<T> = T | null;

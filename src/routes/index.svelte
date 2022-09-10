@@ -8,7 +8,7 @@
 	<title>Interactive Comments</title>
 </svelte:head>
 <main>
-	<Thread comments={$threadStore.comments} />
+	<Thread comments={$threadStore} />
 </main>
 
 <style lang="scss">

@@ -4,7 +4,7 @@
 	import Replies from '@components/Comment/Replies.svelte';
 	import AddComment from '@components/Comment/AddComment.svelte';
 	import type { CommentData, Nullable } from '@types';
-	import { threadStore, userStore } from '@stores';
+	import { threadStore } from '@stores';
 
 	export let comments: CommentData[];
 	let deleteModal: Nullable<HTMLDialogElement> = null;
