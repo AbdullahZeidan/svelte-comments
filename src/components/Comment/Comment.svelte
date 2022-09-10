@@ -6,7 +6,7 @@
 	import { createEventDispatcher } from 'svelte';
 	import type { CommentData, ReplyData } from '@types';
 	import { threadStore, userStore } from '@stores';
-	import AddComment from './AddComment.svelte';
+	// import AddComment from './AddComment.svelte'; // TODO: add again
 
 	const dispatch = createEventDispatcher();
 
@@ -17,7 +17,7 @@
 		editValue: ''
 	};
 
-	const { score, user, createdAt, content, replyingTo } = commentData;
+	const { user, createdAt } = commentData;
 
 	// handlers
 	const handleUpvote = () => console.log('upvoted');
@@ -39,7 +39,7 @@
 </script>
 
 <Card class="comment {isAReply && 'reply'}">
-	<Vote {score} on:upvote={handleUpvote} on:downvote={handleDownvote}>
+	<Vote score={commentData.score} on:upvote={handleUpvote} on:downvote={handleDownvote}>
 		<div class="actions" slot="actions">
 			<CommentActions
 				comment={commentData}
@@ -92,8 +92,8 @@
 				>
 			{:else}
 				<p>
-					<span class="replying-to">{replyingTo ? `@${replyingTo}` : ''}</span>
-					{content}
+					<span class="replying-to">{commentData.replyingTo ? `@${commentData.replyingTo}` : ''}</span>
+					{commentData.content}
 				</p>
 			{/if}
 		</div>

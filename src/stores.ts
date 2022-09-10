@@ -73,7 +73,7 @@ function createThread() {
 					}
 				]
 			}
-		],
+		]
 	});
 
 	return {
@@ -88,7 +88,7 @@ function createThread() {
 			}
 
 			update((thread) => {
-				const newComments: CommentData[] = JSON.parse(JSON.stringify(thread.comments));
+				const newComments: CommentData[] = structuredClone(thread.comments);
 
 				const idxOfCmntToInsertAfter = thread.comments.findIndex(
 					(cmnt) => cmnt.id === afterCommentId
@@ -106,7 +106,7 @@ function createThread() {
 					if (idxOfReplyToInsertAfter !== -1 && typeof idxOfReplyToInsertAfter === 'number') {
 						cmnt.replies?.splice(idxOfReplyToInsertAfter + 1, 0, {
 							...data,
-							replyingTo: data.replyingTo!
+							replyingTo: data.replyingTo as string
 						});
 						return;
 					}
@@ -119,10 +119,10 @@ function createThread() {
 
 		editComment: (commentId: string, newContent: string) => {
 			update((thread) => {
-				const newComments: CommentData[] = JSON.parse(JSON.stringify(thread.comments));
-				newComments.forEach((cmnt, idx) => {
+				const { comments } = thread;
+				comments.forEach((cmnt, idx) => {
 					if (cmnt.id === commentId) {
-						newComments[idx] = { ...cmnt, content: newContent };
+						comments[idx] = { ...cmnt, content: newContent };
 					}
 					cmnt.replies?.forEach((reply, i) => {
 						if (reply.id === commentId) {
@@ -131,15 +131,13 @@ function createThread() {
 						}
 					});
 				});
-				return {
-					comments: newComments
-				};
+				return { comments };
 			});
 		},
 
 		deleteComment: (commentId: string) => {
 			update((thread) => {
-				let newComments: CommentData[] = JSON.parse(JSON.stringify(thread.comments));
+				let newComments: CommentData[] = structuredClone(thread.comments);
 				newComments.forEach((cmnt) => {
 					cmnt.replies = cmnt.replies?.filter((reply) => reply.id !== commentId);
 				});
