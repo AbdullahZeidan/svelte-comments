@@ -27,12 +27,11 @@
 			background-color: var(--clr-accent-500);
 		}
 
-		&:hover,
-		&:focus {
-			opacity: 0.5;
+		&:hover{
+			opacity: 0.8;
 		}
 		&:disabled {
-			opacity: 0.7;
+			opacity: 0.5;
 			cursor: not-allowed;
 		}
 	}

@@ -84,16 +84,14 @@ function createThread() {
 			}
 
 			update((thread) => {
-				const newComments: CommentData[] = structuredClone(thread);
-
 				const idxOfCmntToInsertAfter = thread.findIndex((cmnt) => cmnt.id === afterCommentId);
 
 				if (idxOfCmntToInsertAfter !== -1) {
-					newComments.splice(idxOfCmntToInsertAfter + 1, 0, data);
-					return newComments;
+					thread.splice(idxOfCmntToInsertAfter + 1, 0, data);
+					return thread;
 				}
 
-				newComments.forEach((cmnt) => {
+				thread.forEach((cmnt) => {
 					const idxOfReplyToInsertAfter = cmnt.replies?.findIndex((r) => r.id === afterCommentId);
 					if (idxOfReplyToInsertAfter && idxOfReplyToInsertAfter !== -1) {
 						cmnt.replies?.splice(idxOfReplyToInsertAfter + 1, 0, {
@@ -103,7 +101,7 @@ function createThread() {
 						return;
 					}
 				});
-				return newComments;
+				return thread;
 			});
 		},
 
@@ -112,11 +110,14 @@ function createThread() {
 				thread.forEach((cmnt, idx) => {
 					if (cmnt.id === commentId) {
 						thread[idx].content = newContent;
+						return;
 					}
+
 					cmnt.replies?.forEach((reply, i) => {
 						if (reply.id === commentId) {
 							// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 							cmnt.replies![i].content = newContent;
+							return;
 						}
 					});
 				});
@@ -126,12 +127,12 @@ function createThread() {
 
 		deleteComment: (commentId: string) => {
 			update((thread) => {
-				const newComments: CommentData[] = structuredClone(thread);
-				newComments.forEach((cmnt) => {
+				// Filter the replies first
+				thread.forEach((cmnt) => {
 					cmnt.replies = cmnt.replies?.filter((reply) => reply.id !== commentId);
 				});
 
-				return newComments.filter((cmnt) => cmnt.id !== commentId);
+				return thread.filter((cmnt) => cmnt.id !== commentId);
 			});
 		}
 	};
