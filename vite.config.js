@@ -3,7 +3,7 @@ import svg from '@poppanator/sveltekit-svg';
 
 /** @type {import('vite').UserConfig} */
 const config = {
-	plugins: [sveltekit(), svg()]
+	plugins: [sveltekit(), svg()],
 };
 
 export default config;

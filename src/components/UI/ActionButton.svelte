@@ -1,6 +1,9 @@
 <script lang="ts">
-	export let variant: 'primary' | 'secondary' = 'primary';
+	type ActionButtonVariant = 'primary' | 'secondary'
+	
 	let classname = '';
+	
+	export let variant: ActionButtonVariant = 'primary';
 	export { classname as class };
 </script>
 
@@ -17,6 +20,7 @@
 		font-weight: var(--fw-700);
 		background-color: transparent;
 		padding: 0.4rem 0.6rem;
+		border-radius: calc(var(--bdr-radius) / 2);
 
 		transition: opacity var(--duration) linear;
 

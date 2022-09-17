@@ -20,5 +20,5 @@ export interface ReplyData extends CommentData {
 	replyingTo: string;
 }
 
-/** Can be null, but not undefined */
+/** Can be `null`, but not `undefined` */
 export type Nullable<T> = T | null;

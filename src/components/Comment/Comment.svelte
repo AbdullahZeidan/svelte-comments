@@ -1,37 +1,42 @@
 <script lang="ts">
+	import { createEventDispatcher } from 'svelte';
 	import Vote from './Vote.svelte';
 	import Card from '@components/UI/Card.svelte';
 	import Button from '@components/UI/Button.svelte';
+	import AddReply from '../AddReply.svelte';
 	import CommentActions from './CommentActions.svelte';
-	import { createEventDispatcher } from 'svelte';
 	import type { CommentData, ReplyData } from '@types';
 	import { threadStore, userStore } from '@stores';
-	// import AddComment from './AddComment.svelte'; // TODO: add again
 
 	const dispatch = createEventDispatcher();
 
+	// props
 	export let commentData: CommentData | ReplyData;
 	export let isAReply = false;
+
+	// state
 	let edit = {
 		isEditing: false,
-		editValue: ''
+		editValue: '',
 	};
+	let isReplying = false;
 
-	const { user, createdAt } = commentData;
+	const { user, createdAt, id } = commentData;
 
 	// handlers
-	const handleUpvote = () => console.log('upvoted');
-	const handleDownvote = () => console.log('downvoted');
-
 	const handleEdit = () => {
 		edit = { isEditing: true, editValue: commentData.content };
 	};
+
+	const handleCancelEdit = () => (edit = { isEditing: false, editValue: '' });
+
 	const handleConfirmEdit = () => {
-		threadStore.editComment(commentData.id, edit.editValue);
+		threadStore.editComment(id, edit.editValue);
 		edit = { isEditing: false, editValue: '' };
 	};
 
 	const handleReply = (cmntId: string) => {
+		isReplying = true;
 		console.log('REPLY', cmntId);
 	};
 
@@ -39,19 +44,19 @@
 </script>
 
 <Card class="comment {isAReply && 'reply'}">
-	<Vote score={commentData.score} on:upvote={handleUpvote} on:downvote={handleDownvote}>
+	<Vote score={commentData.score} commentId={id}>
 		<div class="actions" slot="actions">
 			<CommentActions
 				comment={commentData}
 				bind:isEditing={edit.isEditing}
-				on:cancelEdit={() => (edit = { isEditing: false, editValue: '' })}
-				on:delete={() => onCommentDelete(commentData.id)}
-				on:edit={() => handleEdit()}
 				on:reply={(e) => handleReply(e.detail)}
+				on:delete={() => onCommentDelete(id)}
+				on:edit={handleEdit}
+				on:cancelEdit={handleCancelEdit}
 			/>
 		</div>
 	</Vote>
-	<section class="comment__main">
+	<div class="comment__main">
 		<div class="comment__head">
 			<img class="avatar" src={user.image.webp} alt="" />
 			<p class="head__username">
@@ -67,10 +72,10 @@
 				<CommentActions
 					comment={commentData}
 					bind:isEditing={edit.isEditing}
-					on:cancelEdit={() => (edit = { isEditing: false, editValue: '' })}
-					on:delete={() => onCommentDelete(commentData.id)}
-					on:edit={() => handleEdit()}
 					on:reply={(e) => handleReply(e.detail)}
+					on:delete={() => onCommentDelete(id)}
+					on:edit={handleEdit}
+					on:cancelEdit={handleCancelEdit}
 				/>
 			</div>
 		</div>
@@ -79,26 +84,35 @@
 				<textarea
 					placeholder="Edit your comment..."
 					label="Edit your comment."
-					name="edit-comment"
-					id="edit-comment"
-					class="edit-comment"
+					name="edit-comment-input"
+					id="edit-comment-input"
+					class="edit-comment-input"
 					rows="4"
 					bind:value={edit.editValue}
 				/>
 				<Button
-					disabled={edit.editValue === '' || edit.editValue === commentData.content}
 					type="button"
+					disabled={edit.editValue === '' ||
+						edit.editValue === commentData.content}
 					on:click={handleConfirmEdit}>Update</Button
 				>
 			{:else}
 				<p>
-					<span class="replying-to">{commentData.replyingTo ? `@${commentData.replyingTo}` : ''}</span>
+					<span class="replying-to">
+						{commentData.replyingTo ? `@${commentData.replyingTo}` : ''}
+					</span>
 					{commentData.content}
 				</p>
 			{/if}
 		</div>
-	</section>
+	</div>
 </Card>
+{#if isReplying}
+	<AddReply
+		replyingTo={{ username: user.username, id }}
+		on:cancel={() => (isReplying = false)}
+	/>
+{/if}
 
 <slot />
 
@@ -132,26 +146,9 @@
 		}
 	}
 
-	.edit-comment {
+	.edit-comment-input {
 		min-width: 100%;
 		margin-bottom: 0.3rem;
-	}
-
-	.replies {
-		display: grid;
-		gap: 1rem;
-		position: relative;
-
-		&::after {
-			content: '';
-			position: absolute;
-			inset: 0 auto auto clamp(0.3em, 0.2em + 2%, 2.5em);
-			width: 0.15rem;
-			height: 100%;
-
-			border-radius: var(--bdr-radius);
-			background-color: var(--clr-neutral-300);
-		}
 	}
 
 	.head {
@@ -191,10 +188,10 @@
 			&__main {
 				justify-self: unset;
 			}
-		}
-		.comment__head :global(.actions) {
-			margin-inline-start: auto;
-			display: inherit;
+			&__head :global(.actions) {
+				margin-inline-start: auto;
+				display: inherit;
+			}
 		}
 	}
 </style>

@@ -1,20 +1,23 @@
 <script lang="ts">
-	import PlusIcon from '@icons/icon-plus.svg';
-	import MinusIcon from '@icons/icon-minus.svg';
-	import { createEventDispatcher } from 'svelte';
+	import PlusIcon from '@icons/icon-plus.svelte';
+	import MinusIcon from '@icons/icon-minus.svelte';
+	import { threadStore } from '@stores';
 
-	const dispatch = createEventDispatcher();
 
 	export let score = 0;
+	export let commentId: string;
+
+	const handleUpvote = () => threadStore.updateScore(commentId, score + 1);
+	const handleDownvote = () => threadStore.updateScore(commentId, score - 1);	
 </script>
 
-<section label="Comment score" class="votes-container">
+<section class="votes-container" label="Comment score">
 	<div class="votes">
-		<button aria-label="Upvote" on:click={() => dispatch('upvote')}>
+		<button type="button" aria-label="Upvote" on:click={handleUpvote}>
 			<PlusIcon />
 		</button>
 		<p class="votes__score">{score}</p>
-		<button aria-label="Downvote" on:click={() => dispatch('downvote')}>
+		<button type="button" aria-label="Downvote" on:click={handleDownvote}>
 			<MinusIcon />
 		</button>
 	</div>

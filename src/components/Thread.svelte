@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Modal from '@components/UI/Modal.svelte';
 	import Comment from '@components/Comment/Comment.svelte';
-	import Replies from '@components/Comment/Replies.svelte';
+	import Replies from '@components/Replies.svelte';
 	import AddComment from '@components/Comment/AddComment.svelte';
 	import type { CommentData, Nullable } from '@types';
 	import { threadStore } from '@stores';

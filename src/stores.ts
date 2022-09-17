@@ -1,12 +1,12 @@
 import { readable, writable } from 'svelte/store';
-import type { CommentData, User } from './types';
+import type { CommentData, ReplyData, User } from './types';
 
 export const userStore = readable<User>({
 	image: {
 		png: '/avatars/image-juliusomo.png',
-		webp: '/avatars/image-juliusomo.webp'
+		webp: '/avatars/image-juliusomo.webp',
 	},
-	username: 'juliusomo'
+	username: 'juliusomo',
 });
 
 function createThread() {
@@ -20,11 +20,11 @@ function createThread() {
 			user: {
 				image: {
 					png: '/avatars/image-amyrobson.png',
-					webp: '/avatars/image-amyrobson.webp'
+					webp: '/avatars/image-amyrobson.webp',
 				},
-				username: 'amyrobson'
+				username: 'amyrobson',
 			},
-			replies: []
+			replies: [],
 		},
 		{
 			id: '2',
@@ -35,9 +35,9 @@ function createThread() {
 			user: {
 				image: {
 					png: '/avatars/image-maxblagun.png',
-					webp: '/avatars/image-maxblagun.webp'
+					webp: '/avatars/image-maxblagun.webp',
 				},
-				username: 'maxblagun'
+				username: 'maxblagun',
 			},
 			replies: [
 				{
@@ -50,10 +50,10 @@ function createThread() {
 					user: {
 						image: {
 							png: '/avatars/image-ramsesmiron.png',
-							webp: '/avatars/image-ramsesmiron.webp'
+							webp: '/avatars/image-ramsesmiron.webp',
 						},
-						username: 'ramsesmiron'
-					}
+						username: 'ramsesmiron',
+					},
 				},
 				{
 					id: '4',
@@ -65,58 +65,52 @@ function createThread() {
 					user: {
 						image: {
 							png: '/avatars/image-juliusomo.png',
-							webp: '/avatars/image-juliusomo.webp'
+							webp: '/avatars/image-juliusomo.webp',
 						},
-						username: 'juliusomo'
-					}
-				}
-			]
-		}
+						username: 'juliusomo',
+					},
+				},
+			],
+		},
 	]);
 
 	return {
 		subscribe,
 
-		addComment: ({ data, afterCommentId }: { data: CommentData; afterCommentId?: string }) => {
-			if (!afterCommentId) {
-				update((thread) => thread.concat(data));
-				return;
-			}
-
+		addReply: (newReply: ReplyData, replyingToId?: string) => {
 			update((thread) => {
-				const idxOfCmntToInsertAfter = thread.findIndex((cmnt) => cmnt.id === afterCommentId);
-
-				if (idxOfCmntToInsertAfter !== -1) {
-					thread.splice(idxOfCmntToInsertAfter + 1, 0, data);
+				const commentToUpdate = thread.find((cmnt) => cmnt.id === replyingToId);
+				if (commentToUpdate) {
+					commentToUpdate.replies?.push(newReply);
 					return thread;
 				}
 
 				thread.forEach((cmnt) => {
-					const idxOfReplyToInsertAfter = cmnt.replies?.findIndex((r) => r.id === afterCommentId);
-					if (idxOfReplyToInsertAfter && idxOfReplyToInsertAfter !== -1) {
-						cmnt.replies?.splice(idxOfReplyToInsertAfter + 1, 0, {
-							...data,
-							replyingTo: data.replyingTo as string
-						});
+					if (cmnt.replies?.some((reply) => reply.id === replyingToId)) {
+						cmnt.replies.push(newReply);
 						return;
 					}
 				});
+
 				return thread;
 			});
 		},
 
+		addComment: (data: CommentData) => {
+			update((thread) => thread.concat(data));
+		},
+
 		editComment: (commentId: string, newContent: string) => {
 			update((thread) => {
-				thread.forEach((cmnt, idx) => {
+				thread.forEach((cmnt) => {
 					if (cmnt.id === commentId) {
-						thread[idx].content = newContent;
+						cmnt.content = newContent;
 						return;
 					}
 
-					cmnt.replies?.forEach((reply, i) => {
+					cmnt.replies?.forEach((reply) => {
 						if (reply.id === commentId) {
-							// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-							cmnt.replies![i].content = newContent;
+							reply.content = newContent;
 							return;
 						}
 					});
@@ -129,12 +123,34 @@ function createThread() {
 			update((thread) => {
 				// Filter the replies first
 				thread.forEach((cmnt) => {
-					cmnt.replies = cmnt.replies?.filter((reply) => reply.id !== commentId);
+					cmnt.replies = cmnt.replies?.filter(
+						(reply) => reply.id !== commentId
+					);
 				});
 
+				// then filter the top-level comments
 				return thread.filter((cmnt) => cmnt.id !== commentId);
 			});
-		}
+		},
+
+		updateScore: (commentId: string, newScore: number) => {
+			update((thread) => {
+				thread.forEach((cmnt) => {
+					if (cmnt.id === commentId) {
+						cmnt.score = newScore;
+						return;
+					}
+
+					cmnt.replies?.forEach((reply) => {
+						if (reply.id === commentId) {
+							reply.score = newScore;
+							return;
+						}
+					});
+				});
+				return thread;
+			});
+		},
 	};
 }
 

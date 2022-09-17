@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
-	import ReplyIcon from '@icons/icon-reply.svg';
-	import DeleteIcon from '@icons/icon-delete.svg';
-	import EditIcon from '@icons/icon-edit.svg';
+	import ReplyIcon from '@icons/icon-reply.svelte';
+	import DeleteIcon from '@icons/icon-delete.svelte';
+	import EditIcon from '@icons/icon-edit.svelte';
 	import ActionButton from '@components/UI/ActionButton.svelte';
 	import { userStore } from '@stores';
 	import type { CommentData } from '@types';

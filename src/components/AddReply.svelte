@@ -1,30 +1,42 @@
 <script script lang="ts">
 	import { nanoid } from 'nanoid';
-	import Button from '@components/UI/Button.svelte';
+	import { createEventDispatcher } from 'svelte';
 	import Card from '@components/UI/Card.svelte';
+	import Button from '@components/UI/Button.svelte';
+	import ActionButton from '@components/UI/ActionButton.svelte';
 	import { threadStore, userStore } from '@stores';
-	import type { CommentData } from '@types';
+	import type { ReplyData } from '@types';
+
+	const dispatch = createEventDispatcher();
 
 	// state
 	let contentInput = '';
 
-	function submitComment() {
-		const data: CommentData = {
+	// props
+	export let replyingTo: {
+		username: string;
+		id: string;
+	};
+
+	function submitReply() {
+		const newData: ReplyData = {
 			id: nanoid(5),
 			user: $userStore,
 			content: contentInput,
 			createdAt: 'Today',
 			score: 0,
-			replies: [],
+			replyingTo: replyingTo.username,
 		};
 
-		threadStore.addComment(data);
+		
+
+		threadStore.addReply(newData, replyingTo.id);
 		contentInput = '';
 	}
 </script>
 
 <Card>
-	<form on:submit|preventDefault={submitComment} class="add-comment">
+	<form on:submit|preventDefault={submitReply} class="add-reply">
 		<div>
 			<img
 				class="avatar profile--desktop"
@@ -38,23 +50,26 @@
 			label="Write a comment."
 			name="content"
 			id="content"
-			class="add-comment__input"
+			class="add-reply__input"
 			rows="4"
 			bind:value={contentInput}
 		/>
-		<div class="add-comment__actions">
+		<div class="add-reply__actions">
 			<img
 				class="avatar profile--mobile"
 				src={$userStore.image.webp}
 				alt="profile"
 			/>
 			<Button type="submit" disabled={contentInput === ''}>Send</Button>
+			<ActionButton variant="secondary" on:click={() => dispatch('cancel')}>
+				Cancel
+			</ActionButton>
 		</div>
 	</form>
 </Card>
 
 <style lang="scss">
-	.add-comment {
+	.add-reply {
 		display: flex;
 		flex-direction: column;
 		gap: 1rem;
@@ -74,7 +89,7 @@
 	}
 
 	@media screen and (min-width: 45rem) {
-		.add-comment {
+		.add-reply {
 			flex-direction: row;
 			align-items: flex-start;
 		}

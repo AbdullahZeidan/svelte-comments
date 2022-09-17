@@ -16,13 +16,10 @@
 		<slot />
 	</p>
 	<div class="modal__actions">
-		<Button
-			class="btn--secondary"
-			on:click={() => {
-				ref?.close();
-			}}>No, cancel</Button
-		>
-		<Button class="btn--danger" on:click={() => dispatch('confirm')}>Yes, delete</Button>
+		<Button type="button" class="btn--secondary" on:click={() => ref?.close()}>No, cancel</Button>
+		<Button type="button" class="btn--danger" on:click={() => dispatch('confirm')}>
+			Yes, delete
+		</Button>
 	</div>
 </dialog>
 
