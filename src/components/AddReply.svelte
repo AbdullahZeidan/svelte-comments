@@ -1,6 +1,6 @@
 <script script lang="ts">
-	import { nanoid } from 'nanoid';
 	import { createEventDispatcher } from 'svelte';
+	import { nanoid } from 'nanoid';
 	import Card from '@components/UI/Card.svelte';
 	import Button from '@components/UI/Button.svelte';
 	import ActionButton from '@components/UI/ActionButton.svelte';
@@ -18,7 +18,7 @@
 		id: string;
 	};
 
-	function submitReply() {
+	function handleSubmit() {
 		const newData: ReplyData = {
 			id: nanoid(5),
 			user: $userStore,
@@ -28,22 +28,19 @@
 			replyingTo: replyingTo.username,
 		};
 
-		
-
 		threadStore.addReply(newData, replyingTo.id);
 		contentInput = '';
+		dispatch('cancel'); // used to hide the form
 	}
 </script>
 
-<Card>
-	<form on:submit|preventDefault={submitReply} class="add-reply">
-		<div>
-			<img
-				class="avatar profile--desktop"
-				src={$userStore.image.webp}
-				alt="profile"
-			/>
-		</div>
+<Card class="add-reply">
+	<form on:submit|preventDefault={handleSubmit}>
+		<img
+			class="avatar avatar--desktop"
+			src={$userStore.image.webp}
+			alt="profile"
+		/>
 
 		<textarea
 			placeholder="Add a comment..."
@@ -54,37 +51,53 @@
 			rows="4"
 			bind:value={contentInput}
 		/>
+
 		<div class="add-reply__actions">
 			<img
-				class="avatar profile--mobile"
+				class="avatar avatar--mobile"
 				src={$userStore.image.webp}
 				alt="profile"
 			/>
-			<Button type="submit" disabled={contentInput === ''}>Send</Button>
-			<ActionButton variant="secondary" on:click={() => dispatch('cancel')}>
-				Cancel
-			</ActionButton>
+			<div class="actions__buttons">
+				<Button type="submit" disabled={contentInput === ''}>Send</Button>
+				<ActionButton variant="secondary" on:click={() => dispatch('cancel')}>
+					Cancel
+				</ActionButton>
+			</div>
 		</div>
 	</form>
 </Card>
 
-<style lang="scss">
+<style lang="scss" global>
 	.add-reply {
+		margin-inline-start: clamp(1.25em, 0.2em + 7%, 4em);
+
 		display: flex;
 		flex-direction: column;
 		gap: 1rem;
 
+		> form {
+			display: contents;
+		}
+
 		&__input {
 			flex-grow: 1;
 		}
+
 		&__actions {
 			display: flex;
 			justify-content: space-between;
 			align-items: center;
 		}
 	}
+	.actions__buttons {
+		display: flex;
+		justify-content: flex-end;
+		align-items: center;
+		gap: 0.5rem;
+	}
 
-	.profile--desktop {
+	.avatar--desktop {
 		display: none;
 	}
 
@@ -92,11 +105,19 @@
 		.add-reply {
 			flex-direction: row;
 			align-items: flex-start;
+
+			&__actions {
+				flex-direction: column;
+			}
 		}
-		.profile--desktop {
+		.actions__buttons {
+			flex-direction: column;
+		}
+
+		.avatar--desktop {
 			display: initial;
 		}
-		.profile--mobile {
+		.avatar--mobile {
 			display: none;
 		}
 	}

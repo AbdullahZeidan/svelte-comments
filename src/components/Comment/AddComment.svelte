@@ -25,13 +25,11 @@
 
 <Card>
 	<form on:submit|preventDefault={submitComment} class="add-comment">
-		<div>
-			<img
-				class="avatar profile--desktop"
-				src={$userStore.image.webp}
-				alt="profile"
-			/>
-		</div>
+		<img
+			class="avatar avatar--desktop"
+			src={$userStore.image.webp}
+			alt="profile"
+		/>
 
 		<textarea
 			placeholder="Add a comment..."
@@ -44,7 +42,7 @@
 		/>
 		<div class="add-comment__actions">
 			<img
-				class="avatar profile--mobile"
+				class="avatar avatar--mobile"
 				src={$userStore.image.webp}
 				alt="profile"
 			/>
@@ -69,7 +67,7 @@
 		}
 	}
 
-	.profile--desktop {
+	.avatar--desktop {
 		display: none;
 	}
 
@@ -78,10 +76,10 @@
 			flex-direction: row;
 			align-items: flex-start;
 		}
-		.profile--desktop {
+		.avatar--desktop {
 			display: initial;
 		}
-		.profile--mobile {
+		.avatar--mobile {
 			display: none;
 		}
 	}
