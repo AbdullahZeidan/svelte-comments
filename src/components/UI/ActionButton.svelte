@@ -1,8 +1,8 @@
 <script lang="ts">
-	type ActionButtonVariant = 'primary' | 'secondary'
-	
+	type ActionButtonVariant = 'primary' | 'secondary';
+
 	let classname = '';
-	
+
 	export let variant: ActionButtonVariant = 'primary';
 	export { classname as class };
 </script>

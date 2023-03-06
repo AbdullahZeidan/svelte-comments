@@ -83,7 +83,6 @@
 			{#if edit.isEditing}
 				<textarea
 					placeholder="Edit your comment..."
-					label="Edit your comment."
 					name="edit-comment-input"
 					id="edit-comment-input"
 					class="edit-comment-input"

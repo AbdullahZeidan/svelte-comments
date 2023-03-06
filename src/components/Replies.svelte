@@ -30,7 +30,7 @@
 			background-color: var(--clr-neutral-300);
 		}
 	}
-	
+
 	.comment.reply {
 		margin-inline-start: clamp(1.25em, 0.2em + 7%, 4em);
 	}

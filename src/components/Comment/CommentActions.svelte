@@ -14,7 +14,9 @@
 </script>
 
 {#if isEditing}
-	<ActionButton variant="secondary" on:click={() => dispatch('cancelEdit')}>Cancel</ActionButton>
+	<ActionButton variant="secondary" on:click={() => dispatch('cancelEdit')}
+		>Cancel</ActionButton
+	>
 {:else if comment.user.username === $userStore.username}
 	<ActionButton variant="secondary" on:click={() => dispatch('delete')}>
 		<DeleteIcon /> Delete

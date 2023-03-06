@@ -3,15 +3,14 @@
 	import MinusIcon from '@icons/icon-minus.svelte';
 	import { threadStore } from '@stores';
 
-
 	export let score = 0;
 	export let commentId: string;
 
 	const handleUpvote = () => threadStore.updateScore(commentId, score + 1);
-	const handleDownvote = () => threadStore.updateScore(commentId, score - 1);	
+	const handleDownvote = () => threadStore.updateScore(commentId, score - 1);
 </script>
 
-<section class="votes-container" label="Comment score">
+<section class="votes-container">
 	<div class="votes">
 		<button type="button" aria-label="Upvote" on:click={handleUpvote}>
 			<PlusIcon />

@@ -22,13 +22,20 @@
 </script>
 
 <div class="thread">
-	<Modal heading="Delete comment" bind:ref={deleteModal} on:confirm={handleConfirmDelete}>
+	<Modal
+		heading="Delete comment"
+		bind:ref={deleteModal}
+		on:confirm={handleConfirmDelete}
+	>
 		Are you sure you want to delete this comment?
 	</Modal>
 	{#each comments as comment (comment.id)}
 		<Comment commentData={comment} on:promptDelete={handlePromptDelete}>
 			{#if comment.replies?.length}
-				<Replies replies={comment.replies} on:promptDelete={handlePromptDelete} />
+				<Replies
+					replies={comment.replies}
+					on:promptDelete={handlePromptDelete}
+				/>
 			{/if}
 		</Comment>
 	{/each}

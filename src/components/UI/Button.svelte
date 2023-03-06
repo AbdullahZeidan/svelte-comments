@@ -27,7 +27,7 @@
 			background-color: var(--clr-accent-500);
 		}
 
-		&:hover{
+		&:hover {
 			opacity: 0.8;
 		}
 		&:disabled {
